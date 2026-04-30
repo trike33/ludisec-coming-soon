@@ -32,7 +32,6 @@
             font-family: 'Inter', -apple-system, sans-serif; 
         }
 
-        /* Control Widgets */
         .widgets {
             position: fixed;
             top: 20px;
@@ -78,45 +77,44 @@
             justify-content: center;
             height: 100vh;
             text-align: center;
-            pointer-events: none; /* Allows 3D interaction */
+            pointer-events: none; 
             padding: 0 20px;
         }
 
-        h1 { font-size: clamp(2.5rem, 8vw, 4rem); margin: 0; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; }
-        p { font-size: 1.1rem; opacity: 0.8; max-width: 550px; line-height: 1.6; margin-top: 1.2rem; margin-bottom: 2rem; }
+        h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; letter-spacing: 6px; text-transform: uppercase; font-weight: 900; filter: drop-shadow(0 0 20px rgba(0,212,255,0.2)); }
+        p { font-size: 1.2rem; opacity: 0.9; max-width: 600px; line-height: 1.6; margin-top: 1rem; margin-bottom: 2.5rem; }
         
         .badge { 
             background: rgba(0, 212, 255, 0.1); 
             border: 1px solid var(--accent-color); 
-            padding: 6px 16px; 
+            padding: 8px 20px; 
             border-radius: 30px; 
-            font-size: 0.8rem; 
-            font-weight: 700;
+            font-size: 0.85rem; 
+            font-weight: 800;
             color: var(--accent-color); 
-            margin-bottom: 1rem;
-            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 3px;
         }
 
-        /* Contact Button */
         .btn-contact {
-            pointer-events: auto; /* Important: overrides parent none */
+            pointer-events: auto;
             background: var(--accent-color);
             color: white;
             text-decoration: none;
-            padding: 12px 28px;
+            padding: 16px 36px;
             border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-weight: 700;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
         }
 
         .btn-contact:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
             color: white;
         }
         
@@ -138,48 +136,46 @@
     <div id="canvas-container"></div>
 
     <div class="content">
-        <div class="badge" id="txt-badge">DEFENSES INITIALIZING</div>
+        <div class="badge" id="txt-badge">KEEP SECURE</div>
         <h1 id="txt-title">LudiSec</h1>
-        <p id="txt-desc">The next generation of gamified cybersecurity training. We turn employees into a human firewall.</p>
+        <p id="txt-desc">Ready to train? We turn your employees into a powerful human firewall through gamified security training.</p>
         
-        <!-- Updated Contact Button -->
         <a href="mailto:admin.ludisec@gmail.com" class="btn-contact" id="txt-contact">
-            <i class="bi bi-envelope-at-fill"></i>
-            <span>Contact Us</span>
+            <i class="bi bi-shield-fill-check"></i>
+            <span>Get Early Access</span>
         </a>
     </div>
 
     <div class="footer" id="txt-footer">
-        &copy; 2026 LudiSec Inc. | Stay Vigilant.
+        &copy; 2026 LudiSec Inc. | Always Protected.
     </div>
 
     <script>
         // --- TRANSLATIONS ---
         const translations = {
             en: {
-                badge: "DEFENSES INITIALIZING",
-                desc: "The next generation of gamified cybersecurity training. We turn employees into a human firewall.",
-                contact: "Contact Us",
-                footer: "© 2026 LudiSec Inc. | Stay Vigilant."
+                badge: "KEEP SECURE",
+                desc: "Ready to train? We turn your employees into a powerful human firewall through gamified security training.",
+                contact: "Get Early Access",
+                footer: "© 2026 LudiSec Inc. | Always Protected."
             },
             es: {
-                badge: "INICIALIZANDO DEFENSAS",
-                desc: "La próxima generación de formación gamificada en ciberseguridad. Convertimos a los empleados en un cortafuegos humano.",
-                contact: "Contactar",
-                footer: "© 2026 LudiSec Inc. | Manténgase Vigilante."
+                badge: "MANTENTE SEGURO",
+                desc: "¿Listo para entrenar? Convertimos a sus empleados en un potente cortafuegos humano mediante formación gamificada.",
+                contact: "Acceso Anticipado",
+                footer: "© 2026 LudiSec Inc. | Siempre Protegido."
             },
             ca: {
-                badge: "INICIALITZANT DEFENSES",
-                desc: "La pròxima generació de formació gamificada en ciberseguretat. Convertim els empleats en un tallafoc humà.",
-                contact: "Contactar",
-                footer: "© 2026 LudiSec Inc. | Estigui Vigilant."
+                badge: "MANTIGUÉS SEGUR",
+                desc: "Llest per entrenar? Convertim els seus empleats en un potent tallafoc humà mitjançant formació gamificada.",
+                contact: "Accés Anticipat",
+                footer: "© 2026 LudiSec Inc. | Sempre Protegit."
             }
         };
 
         function setLang(lang, btn) {
             document.querySelectorAll('.btn-widget').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             document.getElementById('txt-badge').innerText = translations[lang].badge;
             document.getElementById('txt-desc').innerText = translations[lang].desc;
             document.getElementById('txt-contact').querySelector('span').innerText = translations[lang].contact;
@@ -191,47 +187,55 @@
             const isDark = body.getAttribute('data-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
             body.setAttribute('data-theme', newTheme);
-            
-            const themeIcon = document.querySelector('#themeBtn i');
-            themeIcon.className = isDark ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
-            
-            // Update 3D Colors
+            document.querySelector('#themeBtn i').className = isDark ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
             const colorValue = isDark ? 0x0d6efd : 0x00d4ff;
-            globe.material.color.setHex(colorValue);
-            shield.material.color.setHex(colorValue);
+            shieldMesh.material.color.setHex(colorValue);
         }
 
         // --- THREE.JS ENGINE ---
-        let scene, camera, renderer, globe, shield, particles;
+        let scene, camera, renderer, shieldMesh, particles;
 
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
+            camera.position.z = 8; // Camera at safe distance to prevent clipping
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // The Human Firewall Core[cite: 1]
-            const geometry = new THREE.IcosahedronGeometry(2, 2);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
-            globe = new THREE.Mesh(geometry, material);
-            scene.add(globe);
+            // Create 3D Shield Shape
+            const shieldShape = new THREE.Shape();
+            shieldShape.moveTo(0, 1.2);
+            shieldShape.quadraticCurveTo(1.2, 1.2, 1.2, 0);
+            shieldShape.quadraticCurveTo(1.2, -1.2, 0, -1.8);
+            shieldShape.quadraticCurveTo(-1.2, -1.2, -1.2, 0);
+            shieldShape.quadraticCurveTo(-1.2, 1.2, 0, 1.2);
 
-            // Shield Layer[cite: 1]
-            const shieldGeo = new THREE.IcosahedronGeometry(2.5, 1);
-            const shieldMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.1 });
-            shield = new THREE.Mesh(shieldGeo, shieldMat);
-            globe.add(shield);
+            const extrudeSettings = { depth: 0.3, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1 };
+            const geometry = new THREE.ExtrudeGeometry(shieldShape, extrudeSettings);
+            geometry.center();
 
-            // Threat Particles[cite: 1]
+            const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.4 });
+            shieldMesh = new THREE.Mesh(geometry, material);
+            scene.add(shieldMesh);
+
+            // Particle Fix: Deep background, tiny points
             const pGeometry = new THREE.BufferGeometry();
-            const pCoords = new Float32Array(800 * 3);
-            for (let i = 0; i < 2400; i++) pCoords[i] = (Math.random() - 0.5) * 15;
+            const pCount = 1200;
+            const pCoords = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i++) {
+                pCoords[i] = (Math.random() - 0.5) * 30; // Spread wide
+            }
             pGeometry.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
-            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.03, transparent: true, opacity: 0.5 }));
+            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ 
+                color: 0x888888, 
+                size: 0.015, // Fixed size to be tiny dots
+                transparent: true, 
+                opacity: 0.3 
+            }));
+            particles.position.z = -5; // Keep particles behind the shield
             scene.add(particles);
 
             animate();
@@ -239,13 +243,11 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            globe.rotation.y += 0.0015;
-            globe.rotation.x += 0.0005;
-            particles.rotation.y -= 0.0003;
+            shieldMesh.rotation.y += 0.01; // Smooth rotation
+            particles.rotation.y -= 0.0005;
             
             const time = Date.now() * 0.001;
-            const scale = 1 + Math.sin(time) * 0.03;
-            globe.scale.set(scale, scale, scale);
+            shieldMesh.position.y = Math.sin(time) * 0.15; // Gentle float
             
             renderer.render(scene, camera);
         }
