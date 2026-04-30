@@ -78,12 +78,12 @@
             justify-content: center;
             height: 100vh;
             text-align: center;
-            pointer-events: none;
+            pointer-events: none; /* Allows 3D interaction */
             padding: 0 20px;
         }
 
         h1 { font-size: clamp(2.5rem, 8vw, 4rem); margin: 0; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; }
-        p { font-size: 1.1rem; opacity: 0.8; max-width: 550px; line-height: 1.6; margin-top: 1.2rem; }
+        p { font-size: 1.1rem; opacity: 0.8; max-width: 550px; line-height: 1.6; margin-top: 1.2rem; margin-bottom: 2rem; }
         
         .badge { 
             background: rgba(0, 212, 255, 0.1); 
@@ -95,6 +95,29 @@
             color: var(--accent-color); 
             margin-bottom: 1rem;
             letter-spacing: 1px;
+        }
+
+        /* Contact Button */
+        .btn-contact {
+            pointer-events: auto; /* Important: overrides parent none */
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+            color: white;
         }
         
         .footer { position: absolute; bottom: 30px; width: 100%; text-align: center; opacity: 0.5; font-size: 0.8rem; z-index: 2; }
@@ -118,6 +141,12 @@
         <div class="badge" id="txt-badge">DEFENSES INITIALIZING</div>
         <h1 id="txt-title">LudiSec</h1>
         <p id="txt-desc">The next generation of gamified cybersecurity training. We turn employees into a human firewall.</p>
+        
+        <!-- Updated Contact Button -->
+        <a href="mailto:admin.ludisec@gmail.com" class="btn-contact" id="txt-contact">
+            <i class="bi bi-envelope-at-fill"></i>
+            <span>Contact Us</span>
+        </a>
     </div>
 
     <div class="footer" id="txt-footer">
@@ -130,16 +159,19 @@
             en: {
                 badge: "DEFENSES INITIALIZING",
                 desc: "The next generation of gamified cybersecurity training. We turn employees into a human firewall.",
+                contact: "Contact Us",
                 footer: "© 2026 LudiSec Inc. | Stay Vigilant."
             },
             es: {
                 badge: "INICIALIZANDO DEFENSAS",
                 desc: "La próxima generación de formación gamificada en ciberseguridad. Convertimos a los empleados en un cortafuegos humano.",
+                contact: "Contactar",
                 footer: "© 2026 LudiSec Inc. | Manténgase Vigilante."
             },
             ca: {
                 badge: "INICIALITZANT DEFENSES",
                 desc: "La pròxima generació de formació gamificada en ciberseguretat. Convertim els empleats en un tallafoc humà.",
+                contact: "Contactar",
                 footer: "© 2026 LudiSec Inc. | Estigui Vigilant."
             }
         };
@@ -150,6 +182,7 @@
             
             document.getElementById('txt-badge').innerText = translations[lang].badge;
             document.getElementById('txt-desc').innerText = translations[lang].desc;
+            document.getElementById('txt-contact').querySelector('span').innerText = translations[lang].contact;
             document.getElementById('txt-footer').innerText = translations[lang].footer;
         }
 
@@ -181,13 +214,13 @@
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // The Human Firewall Core
+            // The Human Firewall Core[cite: 1]
             const geometry = new THREE.IcosahedronGeometry(2, 2);
             const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
             globe = new THREE.Mesh(geometry, material);
             scene.add(globe);
 
-            // Shield Layer
+            // Shield Layer[cite: 1]
             const shieldGeo = new THREE.IcosahedronGeometry(2.5, 1);
             const shieldMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.1 });
             shield = new THREE.Mesh(shieldGeo, shieldMat);
@@ -210,7 +243,6 @@
             globe.rotation.x += 0.0005;
             particles.rotation.y -= 0.0003;
             
-            // Subtle "breathing" scale[cite: 1]
             const time = Date.now() * 0.001;
             const scale = 1 + Math.sin(time) * 0.03;
             globe.scale.set(scale, scale, scale);
