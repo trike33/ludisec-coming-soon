@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LudiSec | Coming Soon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LudiSec | Under Construction</title>
     <!-- Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -29,19 +29,21 @@
             color: var(--text-color);
             transition: background-color 0.4s ease, color 0.4s ease;
             overflow: hidden; 
-            font-family: 'Inter', -apple-system, sans-serif; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            touch-action: manipulation;
         }
 
+        /* Responsive Widgets */
         .widgets {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             z-index: 10;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             background: var(--widget-bg);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 50px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(128, 128, 128, 0.2);
@@ -51,19 +53,17 @@
             background: none;
             border: none;
             color: var(--text-color);
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-size: 0.8rem;
+            font-weight: 700;
         }
 
-        .btn-widget:hover { background: rgba(128, 128, 128, 0.2); }
         .btn-widget.active { background: var(--accent-color); color: white; }
 
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -78,56 +78,92 @@
             height: 100vh;
             text-align: center;
             pointer-events: none; 
-            padding: 0 20px;
+            padding: 0 25px;
         }
 
-        h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; letter-spacing: 6px; text-transform: uppercase; font-weight: 900; filter: drop-shadow(0 0 20px rgba(0,212,255,0.2)); }
-        p { font-size: 1.2rem; opacity: 0.9; max-width: 600px; line-height: 1.6; margin-top: 1rem; margin-bottom: 2.5rem; }
+        h1 { font-size: clamp(2.2rem, 10vw, 4.5rem); margin: 0; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         
+        p { 
+            font-size: clamp(1rem, 4vw, 1.2rem); 
+            opacity: 0.9; 
+            max-width: 500px; 
+            line-height: 1.5; 
+            margin: 1.5rem 0; 
+        }
+
+        /* Construction Progress Bar */
+        .progress-container {
+            width: 200px;
+            height: 4px;
+            background: rgba(128, 128, 128, 0.2);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+        .progress-bar {
+            width: 65%;
+            height: 100%;
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+            animation: pulse-progress 2s infinite ease-in-out;
+        }
+        
+        @keyframes pulse-progress {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .badge { 
             background: rgba(0, 212, 255, 0.1); 
             border: 1px solid var(--accent-color); 
-            padding: 8px 20px; 
+            padding: 6px 14px; 
             border-radius: 30px; 
-            font-size: 0.85rem; 
+            font-size: 0.75rem; 
             font-weight: 800;
             color: var(--accent-color); 
-            margin-bottom: 1.5rem;
-            letter-spacing: 3px;
+            margin-bottom: 0.8rem;
+            letter-spacing: 2px;
         }
 
         .btn-contact {
             pointer-events: auto;
             background: var(--accent-color);
-            color: white;
+            color: white !important;
             text-decoration: none;
-            padding: 16px 36px;
+            padding: 14px 28px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 10px;
+            transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
         }
 
-        .btn-contact:hover {
-            transform: scale(1.05) translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
-            color: white;
+        .btn-contact:hover { transform: scale(1.05); }
+
+        /* Mobile specific footer */
+        .footer { 
+            position: absolute; 
+            bottom: 20px; 
+            width: 100%; 
+            text-align: center; 
+            opacity: 0.5; 
+            font-size: 0.7rem; 
+            z-index: 2; 
+            padding: 0 10px;
         }
-        
-        .footer { position: absolute; bottom: 30px; width: 100%; text-align: center; opacity: 0.5; font-size: 0.8rem; z-index: 2; }
     </style>
 </head>
 <body data-theme="dark">
 
     <div class="widgets">
-        <button class="btn-widget" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
+        <button class="btn-widget" onclick="toggleTheme()" id="themeBtn">
             <i class="bi bi-sun-fill"></i>
         </button>
-        <div style="width: 1px; height: 20px; background: rgba(128,128,128,0.3); margin: 0 4px;"></div>
+        <div style="width: 1px; height: 15px; background: rgba(128,128,128,0.3); margin: 0 2px;"></div>
         <button class="btn-widget active" onclick="setLang('en', this)">EN</button>
         <button class="btn-widget" onclick="setLang('es', this)">ES</button>
         <button class="btn-widget" onclick="setLang('ca', this)">CA</button>
@@ -136,10 +172,14 @@
     <div id="canvas-container"></div>
 
     <div class="content">
-        <div class="badge" id="txt-badge">KEEP SECURE</div>
+        <div class="badge" id="txt-badge">CONSTRUCTION IN PROGRESS</div>
         <h1 id="txt-title">LudiSec</h1>
-        <p id="txt-desc">Ready to train? We turn your employees into a powerful human firewall through gamified security training.</p>
+        <p id="txt-desc">Our digital defenses are currently being built. We are preparing to turn your employees into a powerful human firewall.</p>
         
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
         <a href="mailto:admin.ludisec@gmail.com" class="btn-contact" id="txt-contact">
             <i class="bi bi-shield-fill-check"></i>
             <span>Get Early Access</span>
@@ -147,29 +187,29 @@
     </div>
 
     <div class="footer" id="txt-footer">
-        &copy; 2026 LudiSec Inc. | Always Protected.
+        &copy; 2026 LudiSec Inc. | System Initializing...
     </div>
 
     <script>
         // --- TRANSLATIONS ---
         const translations = {
             en: {
-                badge: "KEEP SECURE",
-                desc: "Ready to train? We turn your employees into a powerful human firewall through gamified security training.",
+                badge: "CONSTRUCTION IN PROGRESS",
+                desc: "Our digital defenses are currently being built. We are preparing to turn your employees into a powerful human firewall.",
                 contact: "Get Early Access",
-                footer: "© 2026 LudiSec Inc. | Always Protected."
+                footer: "© 2026 LudiSec Inc. | System Initializing..."
             },
             es: {
-                badge: "MANTENTE SEGURO",
-                desc: "¿Listo para entrenar? Convertimos a sus empleados en un potente cortafuegos humano mediante formación gamificada.",
+                badge: "CONSTRUCCIÓN EN CURSO",
+                desc: "Nuestras defensas digitales se están construyendo. Nos preparamos para convertir a sus empleados en un potente cortafuegos humano.",
                 contact: "Acceso Anticipado",
-                footer: "© 2026 LudiSec Inc. | Siempre Protegido."
+                footer: "© 2026 LudiSec Inc. | Inicializando sistema..."
             },
             ca: {
-                badge: "MANTIGUÉS SEGUR",
-                desc: "Llest per entrenar? Convertim els seus empleats en un potent tallafoc humà mitjançant formació gamificada.",
+                badge: "CONSTRUCCIÓ EN CURS",
+                desc: "Les nostres defenses digitals s'estan construint. Ens preparem per convertir els seus empleats en un potent tallafoc humà.",
                 contact: "Accés Anticipat",
-                footer: "© 2026 LudiSec Inc. | Sempre Protegit."
+                footer: "© 2026 LudiSec Inc. | Inicialitzant sistema..."
             }
         };
 
@@ -185,27 +225,29 @@
         function toggleTheme() {
             const body = document.body;
             const isDark = body.getAttribute('data-theme') === 'dark';
-            const newTheme = isDark ? 'light' : 'dark';
-            body.setAttribute('data-theme', newTheme);
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
             document.querySelector('#themeBtn i').className = isDark ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
             const colorValue = isDark ? 0x0d6efd : 0x00d4ff;
             shieldMesh.material.color.setHex(colorValue);
         }
 
-        // --- THREE.JS ENGINE ---
+        // --- THREE.JS MOBILE ENGINE ---
         let scene, camera, renderer, shieldMesh, particles;
 
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 8; // Camera at safe distance to prevent clipping
+            
+            // Adjust camera distance for mobile
+            const isMobile = window.innerWidth < 768;
+            camera.position.z = isMobile ? 10 : 8;
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Create 3D Shield Shape
+            // Shield Geometry
             const shieldShape = new THREE.Shape();
             shieldShape.moveTo(0, 1.2);
             shieldShape.quadraticCurveTo(1.2, 1.2, 1.2, 0);
@@ -213,29 +255,24 @@
             shieldShape.quadraticCurveTo(-1.2, -1.2, -1.2, 0);
             shieldShape.quadraticCurveTo(-1.2, 1.2, 0, 1.2);
 
-            const extrudeSettings = { depth: 0.3, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1 };
-            const geometry = new THREE.ExtrudeGeometry(shieldShape, extrudeSettings);
+            const geometry = new THREE.ExtrudeGeometry(shieldShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1 });
             geometry.center();
 
-            const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.4 });
+            const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
             shieldMesh = new THREE.Mesh(geometry, material);
+            
+            // Smaller shield on mobile[cite: 1]
+            if(isMobile) shieldMesh.scale.set(0.8, 0.8, 0.8);
+            
             scene.add(shieldMesh);
 
-            // Particle Fix: Deep background, tiny points
+            const pCount = isMobile ? 400 : 1000; // Fewer particles on mobile for performance
             const pGeometry = new THREE.BufferGeometry();
-            const pCount = 1200;
             const pCoords = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) {
-                pCoords[i] = (Math.random() - 0.5) * 30; // Spread wide
-            }
+            for (let i = 0; i < pCount * 3; i++) pCoords[i] = (Math.random() - 0.5) * 35;
             pGeometry.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
-            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ 
-                color: 0x888888, 
-                size: 0.015, // Fixed size to be tiny dots
-                transparent: true, 
-                opacity: 0.3 
-            }));
-            particles.position.z = -5; // Keep particles behind the shield
+            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.02, transparent: true, opacity: 0.3 }));
+            particles.position.z = -5;
             scene.add(particles);
 
             animate();
@@ -243,12 +280,9 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            shieldMesh.rotation.y += 0.01; // Smooth rotation
-            particles.rotation.y -= 0.0005;
-            
-            const time = Date.now() * 0.001;
-            shieldMesh.position.y = Math.sin(time) * 0.15; // Gentle float
-            
+            shieldMesh.rotation.y += 0.01;
+            particles.rotation.y -= 0.0004;
+            shieldMesh.position.y = Math.sin(Date.now() * 0.001) * 0.15;
             renderer.render(scene, camera);
         }
 
@@ -256,6 +290,10 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            // Handle mobile orientation changes[cite: 1]
+            const isMobile = window.innerWidth < 768;
+            camera.position.z = isMobile ? 10 : 8;
+            shieldMesh.scale.set(isMobile ? 0.8 : 1, isMobile ? 0.8 : 1, isMobile ? 0.8 : 1);
         });
 
         init();
