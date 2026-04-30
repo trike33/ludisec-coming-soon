@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LudiSec | Coming Soon</title>
+    <!-- Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <style>
         :root {
             --bg-color: #0a0f1a;
             --text-color: #ffffff;
             --accent-color: #00d4ff;
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --widget-bg: rgba(255, 255, 255, 0.08);
         }
 
         [data-theme="light"] {
-            --bg-color: #f4f7f9;
+            --bg-color: #f8f9fa;
             --text-color: #0a0f1a;
-            --accent-color: #007bff;
-            --card-bg: rgba(0, 0, 0, 0.05);
+            --accent-color: #0d6efd;
+            --widget-bg: rgba(0, 0, 0, 0.05);
         }
 
         body { 
@@ -26,36 +29,42 @@
             color: var(--text-color);
             transition: background-color 0.4s ease, color 0.4s ease;
             overflow: hidden; 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
+            font-family: 'Inter', -apple-system, sans-serif; 
         }
 
-        /* Widgets Container */
+        /* Control Widgets */
         .widgets {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 10;
             display: flex;
-            gap: 10px;
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 12px;
+            align-items: center;
+            gap: 8px;
+            background: var(--widget-bg);
+            padding: 8px 12px;
+            border-radius: 50px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(128, 128, 128, 0.2);
         }
 
         .btn-widget {
             background: none;
-            border: 1px solid rgba(128, 128, 128, 0.3);
+            border: none;
             color: var(--text-color);
-            padding: 5px 10px;
-            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
             transition: all 0.2s;
         }
 
-        .btn-widget:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .btn-widget:hover { background: rgba(128, 128, 128, 0.2); }
         .btn-widget.active { background: var(--accent-color); color: white; }
 
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
@@ -70,17 +79,22 @@
             height: 100vh;
             text-align: center;
             pointer-events: none;
+            padding: 0 20px;
         }
 
-        h1 { font-size: 4rem; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
-        p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; line-height: 1.6; margin-top: 1rem; }
+        h1 { font-size: clamp(2.5rem, 8vw, 4rem); margin: 0; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; }
+        p { font-size: 1.1rem; opacity: 0.8; max-width: 550px; line-height: 1.6; margin-top: 1.2rem; }
+        
         .badge { 
             background: rgba(0, 212, 255, 0.1); 
             border: 1px solid var(--accent-color); 
-            padding: 5px 15px; 
-            border-radius: 20px; 
-            font-size: 0.9rem; 
+            padding: 6px 16px; 
+            border-radius: 30px; 
+            font-size: 0.8rem; 
+            font-weight: 700;
             color: var(--accent-color); 
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
         }
         
         .footer { position: absolute; bottom: 30px; width: 100%; text-align: center; opacity: 0.5; font-size: 0.8rem; z-index: 2; }
@@ -89,11 +103,13 @@
 <body data-theme="dark">
 
     <div class="widgets">
-        <button class="btn-widget" onclick="toggleTheme()" id="themeBtn">☀️</button>
-        <div style="width: 1px; background: rgba(128,128,128,0.3); margin: 0 5px;"></div>
-        <button class="btn-widget active" onclick="setLang('en')">EN</button>
-        <button class="btn-widget" onclick="setLang('es')">ES</button>
-        <button class="btn-widget" onclick="setLang('ca')">CA</button>
+        <button class="btn-widget" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
+            <i class="bi bi-sun-fill"></i>
+        </button>
+        <div style="width: 1px; height: 20px; background: rgba(128,128,128,0.3); margin: 0 4px;"></div>
+        <button class="btn-widget active" onclick="setLang('en', this)">EN</button>
+        <button class="btn-widget" onclick="setLang('es', this)">ES</button>
+        <button class="btn-widget" onclick="setLang('ca', this)">CA</button>
     </div>
 
     <div id="canvas-container"></div>
@@ -109,7 +125,7 @@
     </div>
 
     <script>
-        // --- TRANSLATIONS DATA ---
+        // --- TRANSLATIONS ---
         const translations = {
             en: {
                 badge: "DEFENSES INITIALIZING",
@@ -128,10 +144,9 @@
             }
         };
 
-        // --- STATE MANAGEMENT ---
-        function setLang(lang) {
+        function setLang(lang, btn) {
             document.querySelectorAll('.btn-widget').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            btn.classList.add('active');
             
             document.getElementById('txt-badge').innerText = translations[lang].badge;
             document.getElementById('txt-desc').innerText = translations[lang].desc;
@@ -143,16 +158,17 @@
             const isDark = body.getAttribute('data-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
             body.setAttribute('data-theme', newTheme);
-            document.getElementById('themeBtn').innerText = isDark ? '🌙' : '☀️';
             
-            // Update Three.js Colors
-            const newColor = isDark ? 0x007bff : 0x00d4ff;
-            globe.material.color.setHex(newColor);
-            shield.material.color.setHex(newColor);
-            renderer.setClearColor(isDark ? 0xf4f7f9 : 0x0a0f1a, 1);
+            const themeIcon = document.querySelector('#themeBtn i');
+            themeIcon.className = isDark ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+            
+            // Update 3D Colors
+            const colorValue = isDark ? 0x0d6efd : 0x00d4ff;
+            globe.material.color.setHex(colorValue);
+            shield.material.color.setHex(colorValue);
         }
 
-        // --- THREE.JS LOGIC ---
+        // --- THREE.JS ENGINE ---
         let scene, camera, renderer, globe, shield, particles;
 
         function init() {
@@ -162,9 +178,10 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Core Globe
+            // The Human Firewall Core
             const geometry = new THREE.IcosahedronGeometry(2, 2);
             const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
             globe = new THREE.Mesh(geometry, material);
@@ -176,12 +193,12 @@
             shield = new THREE.Mesh(shieldGeo, shieldMat);
             globe.add(shield);
 
-            // Background Particles
+            // Threat Particles[cite: 1]
             const pGeometry = new THREE.BufferGeometry();
-            const pCoords = new Float32Array(1000 * 3);
-            for (let i = 0; i < 3000; i++) pCoords[i] = (Math.random() - 0.5) * 15;
+            const pCoords = new Float32Array(800 * 3);
+            for (let i = 0; i < 2400; i++) pCoords[i] = (Math.random() - 0.5) * 15;
             pGeometry.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
-            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.02 }));
+            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.03, transparent: true, opacity: 0.5 }));
             scene.add(particles);
 
             animate();
@@ -189,8 +206,15 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            globe.rotation.y += 0.002;
-            particles.rotation.y -= 0.0005;
+            globe.rotation.y += 0.0015;
+            globe.rotation.x += 0.0005;
+            particles.rotation.y -= 0.0003;
+            
+            // Subtle "breathing" scale[cite: 1]
+            const time = Date.now() * 0.001;
+            const scale = 1 + Math.sin(time) * 0.03;
+            globe.scale.set(scale, scale, scale);
+            
             renderer.render(scene, camera);
         }
 
