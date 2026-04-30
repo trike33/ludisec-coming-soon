@@ -33,7 +33,7 @@
             touch-action: manipulation;
         }
 
-        /* Responsive Widgets */
+        /* Widgets */
         .widgets {
             position: fixed;
             top: 15px;
@@ -82,18 +82,10 @@
         }
 
         h1 { font-size: clamp(2.2rem, 10vw, 4.5rem); margin: 0; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
-        
-        p { 
-            font-size: clamp(1rem, 4vw, 1.2rem); 
-            opacity: 0.9; 
-            max-width: 500px; 
-            line-height: 1.5; 
-            margin: 1.5rem 0; 
-        }
+        p { font-size: clamp(1rem, 4vw, 1.2rem); opacity: 0.9; max-width: 500px; line-height: 1.5; margin: 1.2rem 0; }
 
-        /* Construction Progress Bar */
         .progress-container {
-            width: 200px;
+            width: 180px;
             height: 4px;
             background: rgba(128, 128, 128, 0.2);
             border-radius: 10px;
@@ -109,10 +101,7 @@
             animation: pulse-progress 2s infinite ease-in-out;
         }
         
-        @keyframes pulse-progress {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        @keyframes pulse-progress { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         .badge { 
             background: rgba(0, 212, 255, 0.1); 
@@ -138,23 +127,10 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
         }
 
-        .btn-contact:hover { transform: scale(1.05); }
-
-        /* Mobile specific footer */
-        .footer { 
-            position: absolute; 
-            bottom: 20px; 
-            width: 100%; 
-            text-align: center; 
-            opacity: 0.5; 
-            font-size: 0.7rem; 
-            z-index: 2; 
-            padding: 0 10px;
-        }
+        .footer { position: absolute; bottom: 20px; width: 100%; text-align: center; opacity: 0.5; font-size: 0.7rem; z-index: 2; }
     </style>
 </head>
 <body data-theme="dark">
@@ -191,7 +167,6 @@
     </div>
 
     <script>
-        // --- TRANSLATIONS ---
         const translations = {
             en: {
                 badge: "CONSTRUCTION IN PROGRESS",
@@ -228,50 +203,46 @@
             body.setAttribute('data-theme', isDark ? 'light' : 'dark');
             document.querySelector('#themeBtn i').className = isDark ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
             const colorValue = isDark ? 0x0d6efd : 0x00d4ff;
-            shieldMesh.material.color.setHex(colorValue);
+            globe.material.color.setHex(colorValue);
+            outerLayer.material.color.setHex(colorValue);
         }
 
-        // --- THREE.JS MOBILE ENGINE ---
-        let scene, camera, renderer, shieldMesh, particles;
+        // --- THREE.JS ENGINE ---
+        let scene, camera, renderer, globe, outerLayer, particles;
 
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            // Adjust camera distance for mobile
             const isMobile = window.innerWidth < 768;
-            camera.position.z = isMobile ? 10 : 8;
+            camera.position.z = isMobile ? 8 : 6;
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Shield Geometry
-            const shieldShape = new THREE.Shape();
-            shieldShape.moveTo(0, 1.2);
-            shieldShape.quadraticCurveTo(1.2, 1.2, 1.2, 0);
-            shieldShape.quadraticCurveTo(1.2, -1.2, 0, -1.8);
-            shieldShape.quadraticCurveTo(-1.2, -1.2, -1.2, 0);
-            shieldShape.quadraticCurveTo(-1.2, 1.2, 0, 1.2);
-
-            const geometry = new THREE.ExtrudeGeometry(shieldShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1 });
-            geometry.center();
-
+            // Core 3D Circle (Icosahedron Globe)
+            const geometry = new THREE.IcosahedronGeometry(2, 2);
             const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
-            shieldMesh = new THREE.Mesh(geometry, material);
-            
-            // Smaller shield on mobile[cite: 1]
-            if(isMobile) shieldMesh.scale.set(0.8, 0.8, 0.8);
-            
-            scene.add(shieldMesh);
+            globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
 
-            const pCount = isMobile ? 400 : 1000; // Fewer particles on mobile for performance
+            // Outer Shield Layer
+            const outerGeo = new THREE.IcosahedronGeometry(2.5, 1);
+            const outerMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.1 });
+            outerLayer = new THREE.Mesh(outerGeo, outerMat);
+            globe.add(outerLayer);
+
+            if(isMobile) globe.scale.set(0.7, 0.7, 0.7);
+
+            // Digital Dust Particles
+            const pCount = isMobile ? 400 : 800;
             const pGeometry = new THREE.BufferGeometry();
             const pCoords = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pCoords[i] = (Math.random() - 0.5) * 35;
+            for (let i = 0; i < pCount * 3; i++) pCoords[i] = (Math.random() - 0.5) * 30;
             pGeometry.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
-            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.02, transparent: true, opacity: 0.3 }));
+            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.015, transparent: true, opacity: 0.3 }));
             particles.position.z = -5;
             scene.add(particles);
 
@@ -280,9 +251,10 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            shieldMesh.rotation.y += 0.01;
-            particles.rotation.y -= 0.0004;
-            shieldMesh.position.y = Math.sin(Date.now() * 0.001) * 0.15;
+            globe.rotation.y += 0.002;
+            globe.rotation.x += 0.001;
+            particles.rotation.y -= 0.0003;
+            globe.position.y = Math.sin(Date.now() * 0.001) * 0.1;
             renderer.render(scene, camera);
         }
 
@@ -290,10 +262,9 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // Handle mobile orientation changes[cite: 1]
             const isMobile = window.innerWidth < 768;
-            camera.position.z = isMobile ? 10 : 8;
-            shieldMesh.scale.set(isMobile ? 0.8 : 1, isMobile ? 0.8 : 1, isMobile ? 0.8 : 1);
+            camera.position.z = isMobile ? 8 : 6;
+            globe.scale.set(isMobile ? 0.7 : 1, isMobile ? 0.7 : 1, isMobile ? 0.7 : 1);
         });
 
         init();
