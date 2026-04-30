@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LudiSec | Coming Soon</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0a0f1a;
+            --text-color: #ffffff;
+            --accent-color: #00d4ff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f4f7f9;
+            --text-color: #0a0f1a;
+            --accent-color: #007bff;
+            --card-bg: rgba(0, 0, 0, 0.05);
+        }
+
+        body { 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow: hidden; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+        }
+
+        /* Widgets Container */
+        .widgets {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .btn-widget {
+            background: none;
+            border: 1px solid rgba(128, 128, 128, 0.3);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-widget:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .btn-widget.active { background: var(--accent-color); color: white; }
+
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        h1 { font-size: 4rem; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
+        p { font-size: 1.2rem; opacity: 0.8; max-width: 600px; line-height: 1.6; margin-top: 1rem; }
+        .badge { 
+            background: rgba(0, 212, 255, 0.1); 
+            border: 1px solid var(--accent-color); 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+            color: var(--accent-color); 
+        }
+        
+        .footer { position: absolute; bottom: 30px; width: 100%; text-align: center; opacity: 0.5; font-size: 0.8rem; z-index: 2; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="widgets">
+        <button class="btn-widget" onclick="toggleTheme()" id="themeBtn">☀️</button>
+        <div style="width: 1px; background: rgba(128,128,128,0.3); margin: 0 5px;"></div>
+        <button class="btn-widget active" onclick="setLang('en')">EN</button>
+        <button class="btn-widget" onclick="setLang('es')">ES</button>
+        <button class="btn-widget" onclick="setLang('ca')">CA</button>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div class="content">
+        <div class="badge" id="txt-badge">DEFENSES INITIALIZING</div>
+        <h1 id="txt-title">LudiSec</h1>
+        <p id="txt-desc">The next generation of gamified cybersecurity training. We turn employees into a human firewall.</p>
+    </div>
+
+    <div class="footer" id="txt-footer">
+        &copy; 2026 LudiSec Inc. | Stay Vigilant.
+    </div>
+
+    <script>
+        // --- TRANSLATIONS DATA ---
+        const translations = {
+            en: {
+                badge: "DEFENSES INITIALIZING",
+                desc: "The next generation of gamified cybersecurity training. We turn employees into a human firewall.",
+                footer: "© 2026 LudiSec Inc. | Stay Vigilant."
+            },
+            es: {
+                badge: "INICIALIZANDO DEFENSAS",
+                desc: "La próxima generación de formación gamificada en ciberseguridad. Convertimos a los empleados en un cortafuegos humano.",
+                footer: "© 2026 LudiSec Inc. | Manténgase Vigilante."
+            },
+            ca: {
+                badge: "INICIALITZANT DEFENSES",
+                desc: "La pròxima generació de formació gamificada en ciberseguretat. Convertim els empleats en un tallafoc humà.",
+                footer: "© 2026 LudiSec Inc. | Estigui Vigilant."
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        function setLang(lang) {
+            document.querySelectorAll('.btn-widget').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('txt-badge').innerText = translations[lang].badge;
+            document.getElementById('txt-desc').innerText = translations[lang].desc;
+            document.getElementById('txt-footer').innerText = translations[lang].footer;
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            document.getElementById('themeBtn').innerText = isDark ? '🌙' : '☀️';
+            
+            // Update Three.js Colors
+            const newColor = isDark ? 0x007bff : 0x00d4ff;
+            globe.material.color.setHex(newColor);
+            shield.material.color.setHex(newColor);
+            renderer.setClearColor(isDark ? 0xf4f7f9 : 0x0a0f1a, 1);
+        }
+
+        // --- THREE.JS LOGIC ---
+        let scene, camera, renderer, globe, shield, particles;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Core Globe
+            const geometry = new THREE.IcosahedronGeometry(2, 2);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.3 });
+            globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // Shield Layer
+            const shieldGeo = new THREE.IcosahedronGeometry(2.5, 1);
+            const shieldMat = new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.1 });
+            shield = new THREE.Mesh(shieldGeo, shieldMat);
+            globe.add(shield);
+
+            // Background Particles
+            const pGeometry = new THREE.BufferGeometry();
+            const pCoords = new Float32Array(1000 * 3);
+            for (let i = 0; i < 3000; i++) pCoords[i] = (Math.random() - 0.5) * 15;
+            pGeometry.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
+            particles = new THREE.Points(pGeometry, new THREE.PointsMaterial({ color: 0x888888, size: 0.02 }));
+            scene.add(particles);
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            globe.rotation.y += 0.002;
+            particles.rotation.y -= 0.0005;
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>
